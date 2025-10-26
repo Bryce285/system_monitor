@@ -4,6 +4,8 @@
 #include <vector>
 #include <sstream>
 
+#pragma once
+
 class CPU
 {
 public:
@@ -23,7 +25,7 @@ public:
 	unsigned long long guest = 0; 
 	unsigned long long guest_nice = 0;
 
-	double usagePercent;
+	double usagePercent = 0.0;
     };
 
     std::vector<CPUCore> parseCores();

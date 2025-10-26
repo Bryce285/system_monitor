@@ -6,7 +6,7 @@
 #include <sstream>
 #include <algorithm>
 
-//#define DEBUG_PRINTS
+#define DEBUG_PRINTS
 
 CPU::CPU()
 {
@@ -65,11 +65,6 @@ double CPU::getUsagePercent(unsigned long long idlePrev, unsigned long long idle
     double idleDelta = static_cast<double>(idleCur) - static_cast<double>(idlePrev);
     double totalDelta = static_cast<double>(totalCur) - static_cast<double>(totalPrev);
 
-#ifdef DEBUG_PRINTS
-    std::cout << "idleDelta=" << idleDelta
-    << " totalDelta=" << totalDelta<< std::endl;
-#endif
-
     double usagePercent;
 
     if (totalDelta <= 0.0) {
@@ -100,14 +95,15 @@ void CPU::CPUUpdate(std::vector<CPU::CPUCore>& cores)
 	unsigned long long idlePrev = getIdle(coresLastCycle[i]);
 	unsigned long long totalPrev = getTotal(coresLastCycle[i]);
 	
-	// inside CPUUpdate loop, before calling getUsagePercent()
+	double usage = getUsagePercent(idlePrev, idleCur, totalPrev, totalCur);
+
 #ifdef DEBUG_PRINTS
-	std::cout << "core " << cur[i].id
-	<< " totalPrev=" << totalPrev << " totalCur=" << totalCur
-	<< " idlePrev=" << idlePrev  << " idleCur=" << idleCur << std::endl;
+	std::cout << cur[i].id
+	<< " idleDelta=" << (idleCur - idlePrev)
+        << " totalDelta=" << (totalCur - totalPrev)
+        << " usage=" << usage << "%\n";
 #endif
 
-	double usage = getUsagePercent(idlePrev, idleCur, totalPrev, totalCur);
 	cur[i].usagePercent = usage;
     }
     

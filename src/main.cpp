@@ -3,45 +3,78 @@
 #include <chrono>
 #include <thread>
 #include <iomanip>
+#include <atomic>
+#include <mutex>
+#include <string>
+
 #include "CPU.hpp"
+#include "UI.hpp"
+
+#include <ftxui/dom/elements.hpp>
+#include <ftxui/screen/screen.hpp>
+#include "ftxui/dom/node.hpp"
+
+CPU cpu;
+UI ui;
+
+std::atomic<bool> quit = false;
+std::vector<CPU::CPUCore> cores;
+std::mutex coresMutex;
+
+void Update() {
+    while (!quit) {
+        std::vector<CPU::CPUCore> temp;
+        cpu.CPUUpdate(temp); 
+
+        {
+            std::lock_guard<std::mutex> lock(coresMutex);
+            cores = std::move(temp);  
+	}
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
 
 int main()
-{
-    CPU cpuClass;
-    //CPU::CPUCore cpu = cpuClass.parseCores()[0];
-    
-    //std::cout << cpu.id << ' ';
-    //std::cout << cpu.user << ' ';
-    //std::cout << cpu.nice << ' ';
-    //std::cout << cpu.system << ' ';
-    //std::cout << cpu.idle << ' ';
-    //std::cout << cpu.iowait << ' ';
-    //std::cout << cpu.irq << ' ';
-    //std::cout << cpu.softirq << ' ';
-    //std::cout << cpu.steal << ' ';
-    //std::cout << cpu.guest << ' ';
-    //std::cout << cpu.guest_nice << std::endl;
-    
-    bool quit = false;
-    std::vector<CPU::CPUCore> cores;
-    
-    int debugCounter = 0;
+{   
+    std::thread updater(Update);
+    auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(60), ftxui::Dimension::Fixed(8));
+    std::string resetPosition;
+
     while (!quit) {
-	cpuClass.CPUUpdate(cores);
-
-	for (int i = 0; i < cores.size(); ++i) {
-	    std::cout << cores[i].id << ": " << std::fixed << std::setprecision(2) << cores[i].usagePercent << " %" << std::endl;
-	}
-
-	debugCounter++;
-	if (debugCounter >= 15) {
-	    quit = true;
-	}
-
-	// TODO - detect user quit command
 	
+	{
+	    std::lock_guard<std::mutex> lock(coresMutex);
+	    if (cores.empty()) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		continue;
+	    }
+	}
+    
+	std::vector<CPU::CPUCore> localCopy;
+
+	{
+	    std::lock_guard<std::mutex> lock(coresMutex);
+	    if (cores.empty()) continue;
+	    localCopy = cores;
+	}
+
+	auto element = ui.renderCPUCore(localCopy[0]);	
+	
+	screen.Clear();
+	Render(screen, element);
+	std::cout << resetPosition;
+	screen.Print();
+	std::cout.flush();
+	resetPosition = screen.ResetPosition();
+
+	//if (std::cin.peek() == 'q') quit = true;
+
 	std::this_thread::sleep_for(std::chrono::seconds(1));
     }
+
+    quit = true;
+    updater.join();
 
     return 0;
 }

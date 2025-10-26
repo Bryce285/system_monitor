@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/bryce/projects/system_monitor/include
+CXX_INCLUDES = -I/home/bryce/projects/system_monitor/include -isystem /home/bryce/projects/system_monitor/external/FTXUI/include
 
-CXX_FLAGS = -std=gnu++20
+CXX_FLAGS = -std=gnu++17
 

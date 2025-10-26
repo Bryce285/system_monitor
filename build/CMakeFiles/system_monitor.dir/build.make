@@ -124,6 +124,11 @@ system_monitor: CMakeFiles/system_monitor.dir/src/CPU.cpp.o
 system_monitor: CMakeFiles/system_monitor.dir/src/UI.cpp.o
 system_monitor: CMakeFiles/system_monitor.dir/src/main.cpp.o
 system_monitor: CMakeFiles/system_monitor.dir/build.make
+system_monitor: external/FTXUI/libftxui-screen.a
+system_monitor: external/FTXUI/libftxui-dom.a
+system_monitor: external/FTXUI/libftxui-component.a
+system_monitor: external/FTXUI/libftxui-dom.a
+system_monitor: external/FTXUI/libftxui-screen.a
 system_monitor: CMakeFiles/system_monitor.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/bryce/projects/system_monitor/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable system_monitor"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/system_monitor.dir/link.txt --verbose=$(VERBOSE)
