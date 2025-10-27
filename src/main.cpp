@@ -13,6 +13,7 @@
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
 #include "ftxui/dom/node.hpp"
+#include <ftxui/component/event.hpp>
 
 CPU cpu;
 UI ui;
@@ -68,8 +69,6 @@ int main()
 	screen.Print();
 	std::cout.flush();
 	resetPosition = screen.ResetPosition();
-
-	//if (std::cin.peek() == 'q') quit = true;
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
     }

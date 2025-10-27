@@ -1,2 +1,2 @@
 ## TODO
-1. Implement simple TUI to display CPU usage percents
+1. Use graphs instead of gauges for core utilization display

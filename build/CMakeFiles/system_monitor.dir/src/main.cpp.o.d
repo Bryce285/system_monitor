@@ -225,4 +225,6 @@ CMakeFiles/system_monitor.dir/src/main.cpp.o: \
  /home/bryce/projects/system_monitor/external/FTXUI/include/ftxui/screen/string.hpp \
  /usr/include/c++/13/variant \
  /home/bryce/projects/system_monitor/external/FTXUI/include/ftxui/dom/take_any_args.hpp \
- /home/bryce/projects/system_monitor/external/FTXUI/include/ftxui/dom/deprecated.hpp
+ /home/bryce/projects/system_monitor/external/FTXUI/include/ftxui/dom/deprecated.hpp \
+ /home/bryce/projects/system_monitor/external/FTXUI/include/ftxui/component/event.hpp \
+ /home/bryce/projects/system_monitor/external/FTXUI/include/ftxui/component/mouse.hpp
