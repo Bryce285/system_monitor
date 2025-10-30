@@ -39,7 +39,7 @@ void Update() {
 int main()
 {   
     std::thread updater(Update);
-    auto screen = ftxui::Screen::Create(ftxui::Dimension::Full(), ftxui::Dimension::Fixed(30));
+    //auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(60), ftxui::Dimension::Fixed(30));
     std::string resetPosition;
 
     while (!quit) {
@@ -60,9 +60,9 @@ int main()
 	    localCopy = cores;
 	}
     
-	std::vector<ftxui::Element> elements = ui.renderAllCPU(localCopy);
-	auto document = ftxui::vbox(elements);	
+	ftxui::Element document = ui.renderAllCPU(localCopy);
 	
+	auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(60), ftxui::Dimension::Fit(document));
 	screen.Clear();
 	Render(screen, document);
 	std::cout << resetPosition;

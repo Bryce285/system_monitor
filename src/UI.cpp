@@ -20,7 +20,7 @@ ftxui::Element UI::renderCPUCore(CPU::CPUCore core)
     });
 }
 
-std::vector<ftxui::Element> UI::renderAllCPU(std::vector<CPU::CPUCore> cores)
+ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores)
 {
     std::vector<ftxui::Element> CPUGauges;
     CPUGauges.resize(cores.size());
@@ -29,5 +29,11 @@ std::vector<ftxui::Element> UI::renderAllCPU(std::vector<CPU::CPUCore> cores)
 	CPUGauges[i] = renderCPUCore(cores[i]);
     }
 
-    return CPUGauges;
+    auto document = ftxui::vbox({
+	    ftxui::bold(ftxui::text("CPU Utilization")), 
+	    ftxui::separator(), 
+	    ftxui::vbox(CPUGauges)
+	    }) | ftxui::border;
+
+    return document;
 }
