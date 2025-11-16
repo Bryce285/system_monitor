@@ -62,7 +62,7 @@ int main()
     
 	ftxui::Element document = ui.renderAllCPU(localCopy, cpu.uptime, cpu.idleTime);
 	
-	auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(60), ftxui::Dimension::Fit(document));
+	auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(85), ftxui::Dimension::Fit(document));
 	screen.Clear();
 	Render(screen, document);
 	std::cout << resetPosition;
