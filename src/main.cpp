@@ -16,7 +16,7 @@
 #include <ftxui/component/event.hpp>
 
 CPU cpu;
-UI ui;
+UI ui(cpu.numCores);
 
 std::atomic<bool> quit = false;
 std::vector<CPU::CPUCore> cores;
@@ -24,7 +24,7 @@ std::mutex coresMutex;
 
 void Update() {
     while (!quit) {
-	// the new CPUUpdate is not implemented yet but this is how it should look
+	
         std::vector<CPU::CPUCore> coresTemp;
         cpu.CPUUpdate(coresTemp);
 
@@ -62,7 +62,7 @@ int main()
     
 	ftxui::Element document = ui.renderAllCPU(localCopy, cpu.uptime, cpu.idleTime);
 	
-	auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(85), ftxui::Dimension::Fit(document));
+	auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(150), ftxui::Dimension::Fit(document));
 	screen.Clear();
 	Render(screen, document);
 	std::cout << resetPosition;

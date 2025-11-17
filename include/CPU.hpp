@@ -42,6 +42,8 @@ public:
 
     void CPUUpdate(std::vector<CPUCore>& cores);
 
+    int numCores = 0;
+
 private:
     struct UptimeData
     {

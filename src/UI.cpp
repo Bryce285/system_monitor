@@ -5,20 +5,29 @@
 #include "UI.hpp"
 #include "CPU.hpp"
 
+UI::UI(int numCores)
+{
+    // temporary CPUCore object for initialization
+    CPU::CPUCore tempCore;
+
+    // 2d vector to store cpu util % gauges from the last 20 refreshes for each core
+    // TODO - 20 gauges cant all fit on a single graph which is causing a delay
+    // in the data being displayed
+    UI::CPUGauges.resize(numCores);
+    for (size_t i = 0; i < UI::CPUGauges.size(); ++i) {
+	UI::CPUGauges[i].resize(20);
+	UI::CPUGauges[i].assign(20, renderCPUCore(tempCore));
+    }
+}
+
 ftxui::Element UI::renderCPUCore(CPU::CPUCore core)
 {
     float coreUsage = static_cast<float>(core.usagePercent) / 100.0f;
     float usageDisplay = coreUsage * 100.0f;
     coreUsage = std::clamp(coreUsage, 0.0f, 1.0f);
 
-    return  ftxui::hbox({
-	    ftxui::text(core.id) | ftxui::bold | ftxui::size(ftxui::WIDTH, ftxui::EQUAL, 8),
-	    ftxui::separator(),
-
-	    ftxui::gauge(coreUsage) | ftxui::flex,
-	    ftxui::separator(),
-
-	    ftxui::text(std::to_string(usageDisplay).substr(0, 5) + "%") | ftxui::center
+    return  ftxui::vbox({
+	    ftxui::gaugeUp(coreUsage) | ftxui::flex
     });
 }
 
@@ -37,23 +46,31 @@ ftxui::Element UI::renderUptime(CPU::Time uptime, CPU::Time idleTime)
 
 ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime)
 {
-    std::vector<ftxui::Element> CPUGauges;
-    CPUGauges.resize(cores.size());
+    UI::CPUGauges.resize(cores.size());
+
+    // this vector will hold the graph element that will be created from each
+    // nested vector in CPUGauges
+    std::vector<ftxui::Element> graphs;
 
     for (size_t i = 0; i < cores.size(); ++i) {
-	CPUGauges[i] = renderCPUCore(cores[i]);
+	UI::CPUGauges[i].push_back(renderCPUCore(cores[i]));
+	UI::CPUGauges[i].erase(UI::CPUGauges[i].begin());
+	
+	// TODO - include core labels and util % on graphs
+	auto utilGraph = ftxui::hbox(UI::CPUGauges[i]) 
+	    | ftxui::border
+	    | ftxui::size(ftxui::HEIGHT, ftxui::GREATER_THAN, 15);
+	graphs.push_back(utilGraph);
     }
 
-    auto gaugesElement = ftxui::vbox({ 
-	    ftxui::vbox(CPUGauges)
-	    }) | ftxui::border;
+    auto allGraphs = ftxui::hbox(graphs);
 
     auto uptimeElement = renderUptime(uptime, idleTime);
 
     auto document = ftxui::window(ftxui::text("CPU") | ftxui::hcenter | ftxui::bold,
 	    ftxui::vbox({
 	    uptimeElement,
-	    gaugesElement
+	    allGraphs
 	    }));
 
     return document;

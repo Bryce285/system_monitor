@@ -10,8 +10,11 @@
 
 CPU::CPU()
 {
+    std::vector<CPU::CPUCore> coresData = CPU::parseCores();
+    CPU::numCores = coresData.size();
+
     // get initial values for all cores
-    CPU::coresLastCycle = CPU::parseCores();
+    CPU::coresLastCycle = coresData;
 }
 
 std::vector<CPU::CPUCore> CPU::parseCores()
