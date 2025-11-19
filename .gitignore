@@ -19,9 +19,6 @@
 *.user
 *.swp
 
-# Ignore external libraries
-/external/
-
 # Ignore OS-specific junk
 .DS_Store
 Thumbs.db
