@@ -21,36 +21,36 @@ std::vector<CPU::CPUCore> CPU::parseCores()
 {
     std::ifstream file("/proc/stat");
     if (!file.is_open()) {
-	throw std::runtime_error("Failed to open /proc/stat");
+        throw std::runtime_error("Failed to open /proc/stat");
     }
 
     std::string line;
     std::vector<CPUCore> cores;
 
     while (std::getline(file, line)){
-	if (line.rfind("cpu", 0) != 0) break;
+        if (line.rfind("cpu", 0) != 0) break;
 
-	std::istringstream iss(line);
-	CPUCore core;
-	
-	if (!(iss >> core.id)) continue;
+        std::istringstream iss(line);
+        CPUCore core;
 
-	unsigned long long user = 0, nice = 0, system = 0, idle = 0, iowait = 0, irq = 0, softirq = 0, steal = 0, guest = 0, guest_nice = 0; 
+        if (!(iss >> core.id)) continue;
 
-	iss >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+        unsigned long long user = 0, nice = 0, system = 0, idle = 0, iowait = 0, irq = 0, softirq = 0, steal = 0, guest = 0, guest_nice = 0; 
 
-	core.user = user;
-	core.nice = nice;
-	core.system = system;
-	core.idle = idle;
-	core.iowait = iowait;
-	core.irq = irq;
-	core.softirq = softirq;
-	core.steal = steal;
-	core.guest = guest;
-	core.guest_nice = guest_nice;
+        iss >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
 
-	cores.push_back(core);
+        core.user = user;
+        core.nice = nice;
+        core.system = system;
+        core.idle = idle;
+        core.iowait = iowait;
+        core.irq = irq;
+        core.softirq = softirq;
+        core.steal = steal;
+        core.guest = guest;
+        core.guest_nice = guest_nice;
+
+        cores.push_back(core);
     }
     return cores;    
 }
@@ -75,10 +75,10 @@ double CPU::getUsagePercent(unsigned long long idlePrev, unsigned long long idle
     double usagePercent;
 
     if (totalDelta <= 0.0) {
-	usagePercent = 0.0;
+        usagePercent = 0.0;
     }
     else
-	usagePercent = std::clamp((1.0 - (idleDelta / totalDelta)) * 100.0, 0.0, 100.0);
+        usagePercent = std::clamp((1.0 - (idleDelta / totalDelta)) * 100.0, 0.0, 100.0);
 
     return usagePercent;
 }
@@ -88,32 +88,32 @@ void CPU::updateCores(std::vector<CPU::CPUCore>& cores)
     std::vector<CPUCore> cur = parseCores();
 
     if (coresLastCycle.empty() || coresLastCycle.size() != cur.size()) {
-	coresLastCycle = cur;
-	cores = cur;
-	return;
+        coresLastCycle = cur;
+        cores = cur;
+        return;
     }
 
     // calculate usage percent for each core
     // use coresLastCycle for the calculations
     for (size_t i = 0; i < cur.size(); ++i) {
-	unsigned long long idleCur = getIdle(cur[i]);
-	unsigned long long totalCur = getTotal(cur[i]);
+        unsigned long long idleCur = getIdle(cur[i]);
+        unsigned long long totalCur = getTotal(cur[i]);
 
-	unsigned long long idlePrev = getIdle(coresLastCycle[i]);
-	unsigned long long totalPrev = getTotal(coresLastCycle[i]);
-	
-	double usage = getUsagePercent(idlePrev, idleCur, totalPrev, totalCur);
+        unsigned long long idlePrev = getIdle(coresLastCycle[i]);
+        unsigned long long totalPrev = getTotal(coresLastCycle[i]);
+
+        double usage = getUsagePercent(idlePrev, idleCur, totalPrev, totalCur);
 
 #ifdef DEBUG_PRINTS
-	std::cout << cur[i].id
-	<< " idleDelta=" << (idleCur - idlePrev)
-        << " totalDelta=" << (totalCur - totalPrev)
-        << " usage=" << usage << "%\n";
+        std::cout << cur[i].id
+            << " idleDelta=" << (idleCur - idlePrev)
+            << " totalDelta=" << (totalCur - totalPrev)
+            << " usage=" << usage << "%\n";
 #endif
 
-	cur[i].usagePercent = usage;
+        cur[i].usagePercent = usage;
     }
-    
+
     cores = cur;
     coresLastCycle = std::move(cur);
 }
@@ -122,7 +122,7 @@ CPU::UptimeData CPU::parseUptime()
 {
     std::ifstream file("/proc/uptime");
     if (!file.is_open()) {
-	throw std::runtime_error("Failed to open /proc/uptime");
+        throw std::runtime_error("Failed to open /proc/uptime");
     }
 
     CPU::UptimeData uptimeData;
@@ -155,7 +155,7 @@ CPU::Time CPU::secondsToTime(unsigned long long seconds)
     return time;
 }
 
-std::String CPU::parseName()
+std::string CPU::parseName()
 {
     std::ifstream file("/proc/cpuinfo");
     if (!file.is_open()){
@@ -172,9 +172,9 @@ std::String CPU::parseName()
                 cpuName = line.substr(pos + 1);
                 cpuName.erase(0, cpuName.find_first_not_of("\t"));
             }
+
+            break;
         }
-        
-        break;
     }
 
     return cpuName;

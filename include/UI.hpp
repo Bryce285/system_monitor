@@ -8,14 +8,14 @@
 
 class UI
 {
-private:
-    std::vector<std::vector<ftxui::Element>> CPUGauges;   
+    private:
+        std::vector<std::vector<ftxui::Element>> CPUGauges;   
 
-    ftxui::Element renderCPUCore(CPU::CPUCore core);
-    ftxui::Element renderUptime(CPU::Time uptime, CPU::Time idleTime);
+        ftxui::Element renderCPUCore(CPU::CPUCore core);
+        ftxui::Element renderUptime(CPU::Time uptime, CPU::Time idleTime);
 
-public:
-    UI(int numCores);
+    public:
+        UI(int numCores);
 
-    ftxui::Element renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime);
+        ftxui::Element renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName);
 };
