@@ -4,6 +4,7 @@
 
 #include "UI.hpp"
 #include "CPU.hpp"
+#include "memory.hpp"
 
 UI::UI(int numCores)
 {
@@ -30,20 +31,25 @@ ftxui::Element UI::renderCPUCore(CPU::CPUCore core)
             });
 }
 
-ftxui::Element UI::renderUptime(CPU::Time uptime, CPU::Time idleTime)
+ftxui::Element UI::renderHeader(CPU::Time uptime, CPU::Time idleTime, Memory::MemUsage memoryData)
 {
     std::string uptimeStr = std::format("{:03}:{:02}:{:02}:{:02}", uptime.days, uptime.hours, uptime.minutes, uptime.seconds);
 
     std::string idleTimeStr = std::format("{:03}:{:02}:{:02}:{:02}", idleTime.days, idleTime.hours, idleTime.minutes, idleTime.seconds);
 
+    std::string totalStr = std::to_string(memoryData.total);
+    std::string usageStr = std::to_string(memoryData.usage);
+
     return  ftxui::hbox({
             ftxui::text("System up time: " + uptimeStr),
+            ftxui::filler(),
+            ftxui::text("Memory Usage: [ " + usageStr + " / " + totalStr + " ] kB"),
             ftxui::filler(),
             ftxui::text("Time in idle process: " + idleTimeStr)
             });
 }
 
-ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName)
+ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName, Memory::MemUsage memoryData)
 {
     UI::CPUGauges.resize(cores.size());
 
@@ -76,11 +82,11 @@ ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptim
 
     auto allGraphs = ftxui::hbox(graphs);
 
-    auto uptimeElement = renderUptime(uptime, idleTime);
+    auto header = renderHeader(uptime, idleTime, memoryData);
     
     auto document = ftxui::window(ftxui::text(cpuName) | ftxui::bold,
             ftxui::vbox({
-                uptimeElement,
+                header,
                 ftxui::separator(),
                 allGraphs
                 }));

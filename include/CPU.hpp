@@ -44,7 +44,6 @@ class CPU
 
         int numCores = 0;
 
-
     private:
         struct UptimeData
         {

@@ -9,6 +9,7 @@
 
 #include "CPU.hpp"
 #include "UI.hpp"
+#include "memory.hpp"
 
 #include <ftxui/dom/elements.hpp>
 #include <ftxui/screen/screen.hpp>
@@ -17,6 +18,7 @@
 
 CPU cpu;
 UI ui(cpu.numCores);
+Memory memory;
 
 std::atomic<bool> quit = false;
 std::vector<CPU::CPUCore> cores;
@@ -28,6 +30,7 @@ void Update() {
 
         std::vector<CPU::CPUCore> coresTemp;
         cpu.CPUUpdate(coresTemp);
+        memory.memoryUpdate();
 
         {
             std::lock_guard<std::mutex> lock(coresMutex);
@@ -61,7 +64,7 @@ int main()
             localCopy = cores;
         }
 
-        ftxui::Element document = ui.renderAllCPU(localCopy, cpu.uptime, cpu.idleTime, cpuName);
+        ftxui::Element document = ui.renderAllCPU(localCopy, cpu.uptime, cpu.idleTime, cpuName, memory.memoryData);
 
         // TODO - resize based on user screen size	
         auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(150), ftxui::Dimension::Fit(document));

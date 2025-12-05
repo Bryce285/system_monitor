@@ -3,6 +3,7 @@
 #include <format>
 
 #include "CPU.hpp"
+#include "memory.hpp"
 
 #pragma once
 
@@ -12,10 +13,10 @@ class UI
         std::vector<std::vector<ftxui::Element>> CPUGauges;   
 
         ftxui::Element renderCPUCore(CPU::CPUCore core);
-        ftxui::Element renderUptime(CPU::Time uptime, CPU::Time idleTime);
+        ftxui::Element renderHeader(CPU::Time uptime, CPU::Time idleTime, Memory::MemUsage memoryData);
 
     public:
         UI(int numCores);
 
-        ftxui::Element renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName);
+        ftxui::Element renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName, Memory::MemUsage memoryData);
 };
