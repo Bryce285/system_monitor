@@ -64,10 +64,9 @@ int main()
             localCopy = cores;
         }
 
-        ftxui::Element document = ui.renderAllCPU(localCopy, cpu.uptime, cpu.idleTime, cpuName, memory.memoryData);
+        ftxui::Element document = ui.renderAllCPU(localCopy, cpu.uptime, cpu.idleTime, cpuName, memory.memoryData, memory.memStressPercent);
 
-        // TODO - resize based on user screen size	
-        auto screen = ftxui::Screen::Create(ftxui::Dimension::Fixed(150), ftxui::Dimension::Fit(document));
+        auto screen = ftxui::Screen::Create(ftxui::Dimension::Full(), ftxui::Dimension::Full());
         screen.Clear();
         Render(screen, document);
         std::cout << resetPosition;

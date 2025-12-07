@@ -1,4 +1,5 @@
 #include <ftxui/dom/elements.hpp>
+//#include <ftxui/util/color.hpp>
 #include <string>
 #include <format>
 
@@ -16,18 +17,53 @@ UI::UI(int numCores)
     int numGauges = 10;
     for (size_t i = 0; i < UI::CPUGauges.size(); ++i) {
         UI::CPUGauges[i].resize(numGauges);
-        UI::CPUGauges[i].assign(numGauges, renderCPUCore(tempCore));
+        UI::CPUGauges[i].assign(numGauges, renderCPUCore(tempCore, 0.0f));
     }
 }
 
-ftxui::Element UI::renderCPUCore(CPU::CPUCore core)
+ftxui::Element UI::renderCPUCore(CPU::CPUCore core, float memStressPercent)
 {
     float coreUsage = static_cast<float>(core.usagePercent) / 100.0f;
     float usageDisplay = coreUsage * 100.0f;
     coreUsage = std::clamp(coreUsage, 0.0f, 1.0f);
 
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    if (memStressPercent <= 25.0f) {
+        // green
+        red = 63;
+        green = 142;
+        blue = 79;
+    }
+    else if (memStressPercent > 25.0f && memStressPercent <= 50.0f) {
+        // yellow
+        red = 245;
+        green = 203;
+        blue = 41;
+    }
+    else if (memStressPercent > 50.0f && memStressPercent <= 75.0f) {
+        // orange
+        red = 218;
+        green = 110;
+        blue = 24;
+    }
+    else if (memStressPercent > 75.0f && memStressPercent <= 100.0f) {
+        // red
+        red = 186;
+        green = 64;
+        blue = 64;
+    }
+    else {
+        // grey
+        // this indicates something went wrong calculating stressPercent
+        red = 36;
+        green = 31;
+        blue = 30;
+    }
+
     return  ftxui::vbox({
-            ftxui::gaugeUp(coreUsage) | ftxui::flex
+            ftxui::gaugeUp(coreUsage) | ftxui::bgcolor(ftxui::Color::RGB(red, green, blue)) | ftxui::flex
             });
 }
 
@@ -49,7 +85,7 @@ ftxui::Element UI::renderHeader(CPU::Time uptime, CPU::Time idleTime, Memory::Me
             });
 }
 
-ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName, Memory::MemUsage memoryData)
+ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName, Memory::MemUsage memoryData, float memStressPercent)
 {
     UI::CPUGauges.resize(cores.size());
 
@@ -60,27 +96,39 @@ ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptim
 
     for (size_t i = 0; i < cores.size(); ++i) {
         CPU::CPUCore curCore = cores[i];
-        UI::CPUGauges[i].push_back(renderCPUCore(curCore));
+        UI::CPUGauges[i].push_back(renderCPUCore(curCore, memStressPercent));
         UI::CPUGauges[i].erase(UI::CPUGauges[i].begin());
 
         auto utilGraph = ftxui::vbox({
                 ftxui::hbox({
                         ftxui::text(curCore.id) | ftxui::center
                         }),
-
+                
+                // TODO - show the background color somewhere else near the gauge as well so
+                // that even when the cpu is at 100% utilization the memory info is still visible
                 ftxui::hbox(UI::CPUGauges[i])
                 | ftxui::border
-                | ftxui::size(ftxui::HEIGHT, ftxui::GREATER_THAN, minGraphHeight),
+                | ftxui::size(ftxui::HEIGHT, ftxui::GREATER_THAN, minGraphHeight)
+                | ftxui::yflex,
 
                 ftxui::hbox({
                         ftxui::text(std::to_string(curCore.usagePercent).substr(0, 5) + "%")
                         | ftxui::center
                         })
-                });
+                }) | ftxui::yflex;
+
         graphs.push_back(utilGraph);
     }
 
-    auto allGraphs = ftxui::hbox(graphs);
+    std::vector<ftxui::Element> spacedGraphs;
+    for (size_t i = 0; i < graphs.size(); ++i) {
+        spacedGraphs.push_back(graphs[i]);
+        if (i != graphs.size() - 1) {
+            spacedGraphs.push_back(ftxui::filler());
+        }
+    }
+
+    auto allGraphs = ftxui::hbox(spacedGraphs) | ftxui::xflex;
 
     auto header = renderHeader(uptime, idleTime, memoryData);
     
@@ -88,8 +136,8 @@ ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptim
             ftxui::vbox({
                 header,
                 ftxui::separator(),
-                allGraphs
-                }));
+                allGraphs | ftxui::yflex
+                }) | ftxui::yflex);
 
     return document;
 }
