@@ -39,15 +39,15 @@ ftxui::Element UI::renderCPUCore(CPU::CPUCore core, double memPressure)
     }
     else if (memPressure > 25.0f && memPressure <= 50.0f) {
         // yellow
-        red = 179;
-        green = 168;
-        blue = 70;
+        red = 232;
+        green = 171;
+        blue = 44;
     }
     else if (memPressure > 50.0f && memPressure <= 75.0f) {
         // orange
-        red = 227;
-        green = 158;
-        blue = 84;
+        red = 251;
+        green = 156;
+        blue = 108;
     }
     else if (memPressure > 75.0f && memPressure <= 100.0f) {
         // red
@@ -135,7 +135,7 @@ ftxui::Element UI::renderMemory(Memory::MemInfo memInfo, Memory::VmStat vmStat, 
                                 ftxui::text("Page Faults"),
                                 ftxui::filler(),
                                 ftxui::text(std::to_string(vmStat.pgFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(vmStatInstantDiff.pgFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(vmStatInstantDiff.pgFault)) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
                                 }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(pgFault);
 
@@ -143,7 +143,7 @@ ftxui::Element UI::renderMemory(Memory::MemInfo memInfo, Memory::VmStat vmStat, 
                                 ftxui::text("Major Page Faults"),
                                 ftxui::filler(),
                                 ftxui::text(std::to_string(vmStat.pgMajFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(vmStatInstantDiff.pgMajFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(vmStatInstantDiff.pgMajFault)) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
                                 });
     elements.push_back(pgMajFault);
 
@@ -151,7 +151,7 @@ ftxui::Element UI::renderMemory(Memory::MemInfo memInfo, Memory::VmStat vmStat, 
                             ftxui::text("Page Swap In"),
                             ftxui::filler(),
                             ftxui::text(std::to_string(vmStat.pSwpIn) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                            ftxui::text(std::to_string(vmStatInstantDiff.pSwpIn) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                            ftxui::text(std::to_string(vmStatInstantDiff.pSwpIn) + " pages") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
                             }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(pSwpIn);
 
@@ -159,7 +159,7 @@ ftxui::Element UI::renderMemory(Memory::MemInfo memInfo, Memory::VmStat vmStat, 
                                 ftxui::text("Page Swap Out"),
                                 ftxui::filler(),
                                 ftxui::text(std::to_string(vmStat.pSwpOut) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(vmStatInstantDiff.pSwpOut) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(vmStatInstantDiff.pSwpOut) + " pages") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
                                 });
     elements.push_back(pSwpOut);
 
