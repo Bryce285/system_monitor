@@ -72,7 +72,8 @@ int main()
                 memory.pressurePercentDiff);
 
         auto screen = ftxui::Screen::Create(ftxui::Dimension::Full(), ftxui::Dimension::Full());
-        screen.Clear();
+        ui.screenWidth = screen.dimx();
+		screen.Clear();
         Render(screen, document);
         std::cout << resetPosition;
         screen.Print();

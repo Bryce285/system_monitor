@@ -14,10 +14,9 @@ UI::UI(int numCores)
 
     // 2d vector to store cpu util % gauges from the last 10 refreshes for each core
     UI::CPUGauges.resize(numCores);
-    int numGauges = 10;
     for (size_t i = 0; i < UI::CPUGauges.size(); ++i) {
-        UI::CPUGauges[i].resize(numGauges);
-        UI::CPUGauges[i].assign(numGauges, renderCPUCore(tempCore, 0.0f));
+        UI::CPUGauges[i].resize(NUM_GAUGES);
+        UI::CPUGauges[i].assign(NUM_GAUGES, renderCPUCore(tempCore, 0.0f));
     }
 }
 
@@ -32,27 +31,27 @@ ftxui::Element UI::renderCPUCore(CPU::CPUCore core, double memPressure)
     int blue = 0;
     if (memPressure <= 25.0f) {
         // green
-        red = 63;
-        green = 142;
-        blue = 79;
+        red = 46;
+        green = 125;
+        blue = 50;
     }
     else if (memPressure > 25.0f && memPressure <= 50.0f) {
         // yellow
-        red = 232;
-        green = 171;
-        blue = 44;
+        red = 249;
+        green = 168;
+        blue = 37;
     }
     else if (memPressure > 50.0f && memPressure <= 75.0f) {
         // orange
-        red = 251;
-        green = 156;
-        blue = 108;
+        red = 239;
+        green = 108;
+        blue = 0;
     }
     else if (memPressure > 75.0f && memPressure <= 100.0f) {
         // red
-        red = 214;
-        green = 77;
-        blue = 77;
+        red = 198;
+        green = 40;
+        blue = 40;
     }
     else {
         // grey
@@ -75,90 +74,90 @@ ftxui::Element UI::renderMemory(Memory::MemInfo memInfo, Memory::VmStat vmStat, 
 
     ftxui::Element label =  ftxui::vbox({
                             ftxui::hbox({
-                            ftxui::bold(ftxui::text("Memory Stat")),
+                            ftxui::bold(ftxui::text("Memory Stat")) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                             ftxui::filler(),
-                            ftxui::text("Value [instantaneous]") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                            ftxui::text("Change since last refresh") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)}),
+                            ftxui::text("Value [instantaneous]") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                            ftxui::text("Change since last refresh") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)}),
                             ftxui::separator()});
     elements.push_back(label);
 
     ftxui::Element pressurePercent =    ftxui::hbox({
-                                        ftxui::text("Pressure"),
+                                        ftxui::text("Pressure") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                                         ftxui::filler(),
-                                        ftxui::text(std::to_string(static_cast<int>(memPressure)) + " %") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                        ftxui::text(std::to_string(static_cast<int>(memPressureDiff)) + " %") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                        ftxui::text(std::to_string(static_cast<int>(memPressure)) + " %") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                                        ftxui::text(std::to_string(static_cast<int>(memPressureDiff)) + " %") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                                         }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(pressurePercent);
 
     ftxui::Element available =  ftxui::hbox({
-                                ftxui::text("Available"),
+                                ftxui::text("Available") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                                 ftxui::filler(),
-                                ftxui::text(std::to_string(memInfo.available) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(memInfoDiff.available) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(memInfo.available) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                                ftxui::text(std::to_string(memInfoDiff.available) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                                 });
     elements.push_back(available);
 
     ftxui::Element dirty =  ftxui::hbox({
-                            ftxui::text("Dirty"),
+                            ftxui::text("Dirty") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                             ftxui::filler(),
-                            ftxui::text(std::to_string(memInfo.dirty) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                            ftxui::text(std::to_string(memInfoDiff.dirty) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                            ftxui::text(std::to_string(memInfo.dirty) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                            ftxui::text(std::to_string(memInfoDiff.dirty) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                             }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(dirty);
 
     ftxui::Element writeback =  ftxui::hbox({
-                                ftxui::text("Writeback"),
+                                ftxui::text("Writeback") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                                 ftxui::filler(),
-                                ftxui::text(std::to_string(memInfo.writeback) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(memInfoDiff.writeback) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(memInfo.writeback) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                                ftxui::text(std::to_string(memInfoDiff.writeback) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                                 });
     elements.push_back(writeback);
 
     ftxui::Element cached = ftxui::hbox({
-                            ftxui::text("Cached"),
+                            ftxui::text("Cached") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                             ftxui::filler(),
-                            ftxui::text(std::to_string(memInfo.cached) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                            ftxui::text(std::to_string(memInfoDiff.cached) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                            ftxui::text(std::to_string(memInfo.cached) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                            ftxui::text(std::to_string(memInfoDiff.cached) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                             }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(cached);
 
     ftxui::Element active = ftxui::hbox({
-                            ftxui::text("Active"),
+                            ftxui::text("Active") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                             ftxui::filler(),
-                            ftxui::text(std::to_string(memInfo.active) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                            ftxui::text(std::to_string(memInfoDiff.active) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                            ftxui::text(std::to_string(memInfo.active) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                            ftxui::text(std::to_string(memInfoDiff.active) + " kB") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                             });
     elements.push_back(active);
 
     ftxui::Element pgFault =    ftxui::hbox({
-                                ftxui::text("Page Faults"),
+                                ftxui::text("Page Faults") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                                 ftxui::filler(),
-                                ftxui::text(std::to_string(vmStat.pgFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(vmStatInstantDiff.pgFault)) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(vmStat.pgFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                                ftxui::text(std::to_string(vmStatInstantDiff.pgFault)) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                                 }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(pgFault);
 
     ftxui::Element pgMajFault = ftxui::hbox({
-                                ftxui::text("Major Page Faults"),
+                                ftxui::text("Major Page Faults") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                                 ftxui::filler(),
-                                ftxui::text(std::to_string(vmStat.pgMajFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(vmStatInstantDiff.pgMajFault)) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(vmStat.pgMajFault) + " last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                                ftxui::text(std::to_string(vmStatInstantDiff.pgMajFault)) | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                                 });
     elements.push_back(pgMajFault);
 
     ftxui::Element pSwpIn = ftxui::hbox({
-                            ftxui::text("Page Swap In"),
+                            ftxui::text("Page Swap In") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                             ftxui::filler(),
-                            ftxui::text(std::to_string(vmStat.pSwpIn) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                            ftxui::text(std::to_string(vmStatInstantDiff.pSwpIn) + " pages") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                            ftxui::text(std::to_string(vmStat.pSwpIn) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                            ftxui::text(std::to_string(vmStatInstantDiff.pSwpIn) + " pages") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                             }) | ftxui::bgcolor(ftxui::Color::RGB(20, 20, 20));
     elements.push_back(pSwpIn);
 
     ftxui::Element pSwpOut = ftxui::hbox({
-                                ftxui::text("Page Swap Out"),
+                                ftxui::text("Page Swap Out") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
                                 ftxui::filler(),
-                                ftxui::text(std::to_string(vmStat.pSwpOut) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50),
-                                ftxui::text(std::to_string(vmStatInstantDiff.pSwpOut) + " pages") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 50)
+                                ftxui::text(std::to_string(vmStat.pSwpOut) + " pages last second") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30),
+                                ftxui::text(std::to_string(vmStatInstantDiff.pSwpOut) + " pages") | size(ftxui::WIDTH, ftxui::GREATER_THAN, 30)
                                 });
     elements.push_back(pSwpOut);
 
@@ -189,12 +188,14 @@ ftxui::Element UI::renderHeader(CPU::Time uptime, CPU::Time idleTime, Memory::Me
 
 ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName, Memory::MemUsage memoryData, double memPressure, Memory::MemInfo memInfo, Memory::VmStat vmStat, Memory::MemInfoDiff memInfoDiff, Memory::VmStatInstantDiff vmStatInstantDiff, float memPressureDiff)
 {
-    UI::CPUGauges.resize(cores.size());
+	const int GRAPH_WIDTH = NUM_GAUGES + 2;
+    int graphsPerRow = std::max(1, screenWidth / GRAPH_WIDTH);
+	UI::CPUGauges.resize(cores.size());
 
     // this vector will hold the graph element that will be created from each
     // nested vector in CPUGauges
     std::vector<ftxui::Element> graphs;
-    int minGraphHeight = 15;
+    const int MIN_GRAPH_HEIGHT = 15;
 
     for (size_t i = 0; i < cores.size(); ++i) {
         CPU::CPUCore curCore = cores[i];
@@ -203,12 +204,13 @@ ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptim
 
         auto utilGraph = ftxui::vbox({
                 ftxui::hbox({
-                        ftxui::text(curCore.id) | ftxui::center
+                        ftxui::text(curCore.id) | ftxui::bold | ftxui::center
                         }),
                 
                 ftxui::hbox(UI::CPUGauges[i])
                 | ftxui::borderLight
-                | ftxui::size(ftxui::HEIGHT, ftxui::GREATER_THAN, minGraphHeight)
+                | ftxui::size(ftxui::HEIGHT, ftxui::GREATER_THAN, MIN_GRAPH_HEIGHT)
+				| ftxui::size(ftxui::WIDTH, ftxui::EQUAL, GRAPH_WIDTH)
                 | ftxui::yflex,
 
                 ftxui::hbox({
@@ -225,15 +227,35 @@ ftxui::Element UI::renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptim
         graphs.push_back(utilGraph);
     }
 
-    std::vector<ftxui::Element> spacedGraphs;
-    for (size_t i = 0; i < graphs.size(); ++i) {
-        spacedGraphs.push_back(graphs[i]);
-        if (i != graphs.size() - 1) {
-            spacedGraphs.push_back(ftxui::filler());
-        }
-    }
+	std::vector<ftxui::Element> graphRows;
 
-    auto allGraphs = ftxui::hbox(spacedGraphs) | ftxui::xflex;
+	size_t total = graphs.size();
+
+	size_t rows = (total + graphsPerRow - 1) / graphsPerRow;
+	rows = std::max<size_t>(1, rows);
+
+	size_t base = total / rows;
+	size_t extra = total % rows;
+	size_t index = 0;
+
+	for (size_t i = 0; i < rows; i ++) {
+		size_t count = base + (i < extra ? 1 : 0);
+
+    	auto begin = graphs.begin() + index;
+    	auto end   = begin + count;
+
+		std::vector<ftxui::Element> row;
+		for (auto it = begin; it != end; ++it) {
+			row.push_back(*it);
+			if (std::next(it) != end)
+				row.push_back(ftxui::filler());
+		}
+
+		graphRows.push_back(ftxui::hbox(row) | ftxui::yflex);
+		index += count;
+	}
+
+	auto allGraphs = ftxui::vbox(graphRows);
     auto header = renderHeader(uptime, idleTime, memoryData);
     auto memoryStats = renderMemory(memInfo, vmStat, memPressure, memInfoDiff, vmStatInstantDiff, memPressureDiff);
     

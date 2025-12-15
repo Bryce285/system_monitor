@@ -10,6 +10,8 @@
 class UI
 {
     private:
+		const int NUM_GAUGES = 15;
+
         std::vector<std::vector<ftxui::Element>> CPUGauges;   
 
         ftxui::Element renderCPUCore(CPU::CPUCore core, double memPressure);
@@ -19,6 +21,8 @@ class UI
 
     public:
         UI(int numCores);
+
+		int screenWidth = 0;
 
         ftxui::Element renderAllCPU(std::vector<CPU::CPUCore> cores, CPU::Time uptime, CPU::Time idleTime, std::string cpuName, Memory::MemUsage memoryData, double memPressure, Memory::MemInfo memInfo, Memory::VmStat vmStat, Memory::MemInfoDiff memInfoDiff, Memory::VmStatInstantDiff vmStatInstantDiff, float memPressureDiff);
 };
